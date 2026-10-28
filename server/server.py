@@ -17,6 +17,7 @@ import json
 import os
 import shlex
 import shutil
+import socket
 import subprocess
 import sys
 import time
@@ -29,7 +30,7 @@ CONFIG_PATH = BASE / "config.json"
 USER_DIR = Path.home() / ".dsh-ubuntu-vm-control"
 USER_CONFIG = USER_DIR / "config.json"
 SERVER_NAME = "ubuntu-vm-control"
-SERVER_VERSION = "0.1.0"
+SERVER_VERSION = "0.1.1"
 SUPPORTED_PROTOCOLS = ("2025-06-18", "2025-03-26", "2024-11-05")
 
 DEFAULT_CONFIG = {
@@ -107,10 +108,11 @@ def find_exe(name: str) -> str:
 
 
 # local：直接在这台机器上跑（server 部署在 VM 里）
-# ssh：从 Windows 通过 ssh.exe 操作远端 VM
+# ssh：通过 ssh 操作远端 VM
+# auto：配了 host 就走 ssh；没配 host 就认为服务跑在被控机本身上，走 local
 MODE = str(CFG.get("mode") or "auto").lower()
 if MODE == "auto":
-    MODE = "local" if os.name != "nt" else "ssh"
+    MODE = "ssh" if str(CFG.get("host") or "").strip() else "local"
 LOCAL = MODE == "local"
 
 SSH = None if LOCAL else find_exe("ssh")
@@ -1009,7 +1011,7 @@ def write_message(obj: dict[str, Any]) -> None:
 
 def main() -> None:
     if LOCAL:
-        where = f"本机 {os.uname().nodename}（local）"
+        where = f"本机 {socket.gethostname()}（local）"
     elif str(CFG.get("host") or "").strip():
         where = f"{_target()}:{CFG['port']}（ssh）"
     else:

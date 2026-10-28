@@ -1,6 +1,6 @@
 # dsh-ubuntu-vm-control
 
-![version](https://img.shields.io/badge/version-0.1.0-blue)
+![version](https://img.shields.io/badge/version-0.1.1-blue)
 
 让 DeepSeek Harness 直接操作一台 **Ubuntu 桌面虚拟机**——跑命令、开终端、点鼠标、敲键盘，**截图存成真实图片文件**。
 
@@ -104,6 +104,9 @@ VM_SSH_KEY=~/.ssh/id_ed25519
 ```
 
 优先级：环境变量 > 用户配置文件 > 默认值。
+
+`mode` 一般不用填：**配了 `host` 就自动走 `ssh`，没配 `host` 则认为是跑在被控机本身上（`local`）**。
+所以在 macOS / Linux 上控制远端虚拟机时，务必确认 `host` 已配置，否则会被当成操作本机。
 
 配好之后让 agent 调一次 `vm_status`，它会报告连接状态、会话类型（X11/Wayland）、缺失的工具和分辨率。
 

@@ -1,0 +1,9 @@
+node_modules/
+*.tgz
+package-lock.json
+.DS_Store
+Thumbs.db
+
+# 真实配置和截图不要进仓库
+server/config.json
+shots/

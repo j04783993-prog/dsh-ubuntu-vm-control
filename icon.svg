@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Ubuntu VM Control">
+  <rect x="5" y="9" width="54" height="38" rx="4" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
+  <rect x="9" y="13" width="46" height="30" rx="2" fill="#B5D4F4"/>
+  <rect x="26" y="49" width="12" height="5" rx="1" fill="#185FA5"/>
+  <path d="M20 58h24" stroke="#185FA5" stroke-width="3" stroke-linecap="round"/>
+  <path d="M31 20l11 9-4.5 1.2 3.2 5.6-2.6 1.5-3.2-5.6-3.4 3.2z" fill="#185FA5"/>
+</svg>

@@ -1,0 +1,21 @@
+{
+  "name": "dsh-ubuntu-vm-control",
+  "version": "0.1.0",
+  "description": "DeepSeek Harness 插件：通过 SSH 控制 Ubuntu 桌面虚拟机——命令、终端、鼠标键盘，以及真实截图。",
+  "license": "MIT",
+  "author": "Jerry",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "mcp",
+    "ubuntu",
+    "vm",
+    "screenshot",
+    "xdotool"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/j04783993-prog/dsh-ubuntu-vm-control.git"
+  }
+}

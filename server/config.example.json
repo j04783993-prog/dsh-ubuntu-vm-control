@@ -1,0 +1,10 @@
+{
+  "host": "192.168.1.10",
+  "port": 22,
+  "user": "ubuntu",
+  "key_path": "~/.ssh/id_ed25519",
+  "display": ":0",
+  "screenshot_dir": "~/vm-shots",
+  "max_width": 1600,
+  "save_remote": false
+}

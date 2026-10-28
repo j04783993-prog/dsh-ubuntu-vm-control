@@ -1,6 +1,6 @@
 {
   "name": "dsh-ubuntu-vm-control",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Ubuntu 虚拟机控制 MCP server：通过 SSH 操作桌面（命令/终端/截图/键鼠），支持 DeepSeek Harness 一键集成。",
   "license": "MIT",
   "author": "Jerry",

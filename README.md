@@ -1,6 +1,6 @@
 # dsh-ubuntu-vm-control
 
-![version](https://img.shields.io/badge/version-0.1.2-blue)
+![version](https://img.shields.io/badge/version-0.1.3-blue)
 
 **Ubuntu 虚拟机控制 MCP server**——让任意支持 MCP 的客户端（dsh / Claude Desktop / Cursor / Trae…）直接操作一台 Ubuntu 桌面虚拟机：跑命令、开终端、点鼠标、敲键盘，**截图存成真实图片文件**。同时提供 DeepSeek Harness 的一键集成。
 
@@ -31,7 +31,34 @@ MCP 客户端 ──stdio──> server.py (Python) ──SSH──> Ubuntu VM
 
 ### 方式一：作为 MCP server 接入任意客户端（推荐）
 
-不用克隆仓库，也不依赖 dsh。在客户端配置里加一条 stdio server：
+不用克隆仓库，也不依赖 dsh。先把包装到全局：
+
+```bash
+npm i -g dsh-ubuntu-vm-control
+```
+
+然后在客户端配置里加一条 stdio server。
+
+**Windows** 必须用 `node` 指向包内入口——MCP 客户端是直接启动进程、不经过 shell，写 `npx` 会因为 `.cmd` 无法执行而报 `ENOENT`：
+
+```json
+{
+  "mcpServers": {
+    "ubuntu-vm-control": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\<用户名>\\AppData\\Roaming\\npm\\node_modules\\dsh-ubuntu-vm-control\\bin\\cli.js",
+        "serve"
+      ],
+      "env": { "VM_HOST": "192.168.1.10", "VM_USER": "ubuntu" }
+    }
+  }
+}
+```
+
+> 真实路径用 `npm root -g` 查到目录后，拼上 `\dsh-ubuntu-vm-control\bin\cli.js`。
+
+**macOS / Linux** 可以直接用 npx：
 
 ```json
 {
@@ -44,8 +71,6 @@ MCP 客户端 ──stdio──> server.py (Python) ──SSH──> Ubuntu VM
   }
 }
 ```
-
-也可以先 `npm i -g dsh-ubuntu-vm-control`，再把 `command` 换成 `dsh-ubuntu-vm-control`、`args` 换成 `["serve"]`。
 
 ### 方式二：装成 dsh 插件
 
@@ -172,10 +197,25 @@ type %USERPROFILE%\.ssh\id_ed25519.pub | ssh ubuntu@192.168.1.10 "mkdir -p ~/.ss
 
 ## 卸载
 
+两种安装方式对应不同步骤。
+
+**npm 模式**（方式一）：
+
+```bash
+npm uninstall -g dsh-ubuntu-vm-control
+```
+
+再删掉各客户端配置里的 `ubuntu-vm-control` 条目。
+
+**install.py 模式**（方式二）：
+
 ```bash
 python install.py --uninstall
 rm -rf ~/.dsh-ubuntu-vm-control
 ```
+
+> 两种模式互斥：npm 模式的代码在全局 `node_modules`，`install.py` 模式的代码在 `~/.dsh-ubuntu-vm-control/`。
+> 混用会出现「装了但不生效」或重复注册。
 
 ## 原理
 

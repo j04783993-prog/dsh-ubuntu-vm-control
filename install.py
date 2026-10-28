@@ -76,6 +76,22 @@ def strip_managed(text: str) -> str:
     return "\n".join(out)
 
 
+def managed_block(text: str) -> str:
+    """取出 install.py 写入的那一段（含标记之内）。"""
+    inside = False
+    out = []
+    for line in text.splitlines():
+        if line.strip() == MARK_BEGIN:
+            inside = True
+            continue
+        if line.strip() == MARK_END:
+            inside = False
+            continue
+        if inside:
+            out.append(line)
+    return "\n".join(out)
+
+
 def build_block(python_exe: str, server_py: Path) -> str:
     def q(p: str) -> str:
         return "'" + str(p).replace("'", "''") + "'"
@@ -105,6 +121,7 @@ def main() -> int:
     ap.add_argument("--python", default=sys.executable, help="用哪个 Python 解释器跑服务")
     ap.add_argument("--uninstall", action="store_true", help="移除配置")
     ap.add_argument("--dry-run", action="store_true", help="只打印结果，不写文件")
+    ap.add_argument("--force", action="store_true", help="即使当前是 npm 包模式，也强制改回 Python 直跑")
     ap.add_argument(
         "--install-dir",
         default=None,
@@ -131,6 +148,13 @@ def main() -> int:
         print(f"已移除配置。备份：{backup}")
         print("重启 dsh 生效。")
         return 0
+
+    block = managed_block(raw)
+    if block and "cli.js" in block and not args.force:
+        print("检测到当前的 dsh 配置走的是 npm 包模式（node + cli.js）。")
+        print("继续安装会把它改回 Python 直跑模式，可能和已安装的 npm 包冲突。")
+        print("确实要改请加 --force；只想移除配置请用 --uninstall。")
+        return 1
 
     src_server = SRC_DIR / "server" / "server.py"
     if not src_server.exists():

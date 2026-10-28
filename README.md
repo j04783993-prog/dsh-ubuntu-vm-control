@@ -1,5 +1,7 @@
 # dsh-ubuntu-vm-control
 
+![version](https://img.shields.io/badge/version-0.1.0-blue)
+
 让 DeepSeek Harness 直接操作一台 **Ubuntu 桌面虚拟机**——跑命令、开终端、点鼠标、敲键盘，**截图存成真实图片文件**。
 
 适合需要图形界面的场景：做安全实验、复现漏洞、点网页表单、给报告配图。纯 SSH 只能拿到文字输出，这个能拿到**屏幕**。

@@ -5,5 +5,11 @@ package-lock.json
 Thumbs.db
 
 # 真实配置和截图不要进仓库
+config.json
 server/config.json
 shots/
+
+# 本地运行产物
+.venv/
+__pycache__/
+*.bak-*

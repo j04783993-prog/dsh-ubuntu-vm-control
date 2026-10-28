@@ -9,13 +9,30 @@
     "dsh-plugin",
     "deepseek-harness",
     "mcp",
+    "mcp-server",
     "ubuntu",
     "vm",
     "screenshot",
     "xdotool"
   ],
+  "homepage": "https://github.com/j04783993-prog/dsh-ubuntu-vm-control#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/j04783993-prog/dsh-ubuntu-vm-control.git"
+  },
+  "bugs": {
+    "url": "https://github.com/j04783993-prog/dsh-ubuntu-vm-control/issues"
+  },
+  "bin": {
+    "dsh-ubuntu-vm-control": "bin/cli.js"
+  },
+  "files": [
+    "bin/",
+    "install.py",
+    "server/server.py",
+    "server/config.example.json"
+  ],
+  "engines": {
+    "node": ">=16"
   }
 }

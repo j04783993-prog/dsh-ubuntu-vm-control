@@ -57,6 +57,29 @@ python install.py --uninstall                # 移除配置
 
 装完**完全退出 dsh 再重新打开**（不是刷新窗口）。
 
+### 通过 npm 安装（可选）
+
+不想克隆仓库时可以直接用 npm 包。它本质上只是转发命令给 Python 脚本，所以本机仍需要 **Python 3.8+**。
+
+```bash
+npx dsh-ubuntu-vm-control install            # 等价于 python install.py
+npx dsh-ubuntu-vm-control install --profile web
+npx dsh-ubuntu-vm-control serve              # 以 MCP stdio 方式启动服务
+```
+
+`serve` 适合写进其它 MCP 客户端的配置：
+
+```json
+{
+  "mcpServers": {
+    "ubuntu-vm-control": {
+      "command": "npx",
+      "args": ["-y", "dsh-ubuntu-vm-control", "serve"]
+    }
+  }
+}
+```
+
 ## 配置被控机
 
 **方式一：配置文件** `~/.dsh-ubuntu-vm-control/config.json`

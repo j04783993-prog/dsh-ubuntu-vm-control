@@ -105,6 +105,11 @@ def main() -> int:
     ap.add_argument("--python", default=sys.executable, help="用哪个 Python 解释器跑服务")
     ap.add_argument("--uninstall", action="store_true", help="移除配置")
     ap.add_argument("--dry-run", action="store_true", help="只打印结果，不写文件")
+    ap.add_argument(
+        "--install-dir",
+        default=None,
+        help=f"server.py 放在哪里，默认 {TARGET_DIR}",
+    )
     args = ap.parse_args()
 
     cfg = patch_path(args.profile)
@@ -132,11 +137,20 @@ def main() -> int:
         print(f"仓库不完整，找不到 {src_server}")
         return 1
 
-    TARGET_DIR.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(src_server, TARGET_SERVER)
-    print(f"服务已复制到 {TARGET_SERVER}")
+    target_dir = Path(args.install_dir).expanduser().resolve() if args.install_dir else TARGET_DIR
+    target_server = target_dir / "server.py"
+    target_dir.mkdir(parents=True, exist_ok=True)
 
-    block = build_block(args.python, TARGET_SERVER)
+    stamp = time.strftime("%Y%m%d-%H%M%S")
+    if target_server.exists() and target_server.read_bytes() != src_server.read_bytes():
+        old = target_server.with_suffix(f".py.bak-{stamp}")
+        shutil.copy2(target_server, old)
+        print(f"目标位置已有不同版本，已备份：{old}")
+
+    shutil.copy2(src_server, target_server)
+    print(f"服务已复制到 {target_server}")
+
+    block = build_block(args.python, target_server)
     backup = cfg.with_suffix(cfg.suffix + f".bak-{time.strftime('%Y%m%d-%H%M%S')}")
 
     if args.dry_run:
@@ -158,7 +172,7 @@ def main() -> int:
     print("  2. 在 dsh 里问：调 vm_status 看看虚拟机环境")
     print()
     print("如果提示未配置主机，先设置：")
-    print(f"  {TARGET_DIR / 'config.json'}  或环境变量 VM_HOST")
+    print(f"  {target_dir / 'config.json'}  或环境变量 VM_HOST")
     return 0
 
 

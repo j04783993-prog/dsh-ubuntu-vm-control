@@ -1,16 +1,16 @@
 # dsh-ubuntu-vm-control
 
-![version](https://img.shields.io/badge/version-0.1.1-blue)
+![version](https://img.shields.io/badge/version-0.1.2-blue)
 
-让 DeepSeek Harness 直接操作一台 **Ubuntu 桌面虚拟机**——跑命令、开终端、点鼠标、敲键盘，**截图存成真实图片文件**。
+**Ubuntu 虚拟机控制 MCP server**——让任意支持 MCP 的客户端（dsh / Claude Desktop / Cursor / Trae…）直接操作一台 Ubuntu 桌面虚拟机：跑命令、开终端、点鼠标、敲键盘，**截图存成真实图片文件**。同时提供 DeepSeek Harness 的一键集成。
 
 适合需要图形界面的场景：做安全实验、复现漏洞、点网页表单、给报告配图。纯 SSH 只能拿到文字输出，这个能拿到**屏幕**。
 
 ```
-dsh ──stdio──> server.py (Python) ──SSH──> Ubuntu VM
-                                          ├── xdotool  （键鼠）
-                                          ├── scrot    （截图）
-                                          └── wmctrl   （窗口）
+MCP 客户端 ──stdio──> server.py (Python) ──SSH──> Ubuntu VM
+                                                  ├── xdotool  （键鼠）
+                                                  ├── scrot    （截图）
+                                                  └── wmctrl   （窗口）
 ```
 
 ## 前置条件
@@ -18,7 +18,7 @@ dsh ──stdio──> server.py (Python) ──SSH──> Ubuntu VM
 | 项 | 要求 |
 | --- | --- |
 | **Python** | **3.8 或更高**，在 `PATH` 里 |
-| DeepSeek Harness | 已装好并能正常启动 |
+| MCP 客户端 | dsh、Claude Desktop、Cursor、Trae 等任意支持 stdio MCP 的客户端 |
 | 被控机 | Ubuntu，**X11 会话** |
 | 被控机软件 | `sudo apt install -y xdotool scrot wmctrl openssh-server` |
 | SSH | **密钥免密登录**（插件用 `BatchMode`，不会弹密码框） |
@@ -26,6 +26,28 @@ dsh ──stdio──> server.py (Python) ──SSH──> Ubuntu VM
 > 没有 Xorg 会话？Ubuntu 25.10 起 GNOME 移除了 Xorg。装个 Xfce 即可：`sudo apt install -y xfce4`，登录时选 **Xfce Session**。
 
 ## 安装
+
+两种方式，按你用的客户端选。
+
+### 方式一：作为 MCP server 接入任意客户端（推荐）
+
+不用克隆仓库，也不依赖 dsh。在客户端配置里加一条 stdio server：
+
+```json
+{
+  "mcpServers": {
+    "ubuntu-vm-control": {
+      "command": "npx",
+      "args": ["-y", "dsh-ubuntu-vm-control", "serve"],
+      "env": { "VM_HOST": "192.168.1.10", "VM_USER": "ubuntu" }
+    }
+  }
+}
+```
+
+也可以先 `npm i -g dsh-ubuntu-vm-control`，再把 `command` 换成 `dsh-ubuntu-vm-control`、`args` 换成 `["serve"]`。
+
+### 方式二：装成 dsh 插件
 
 ```bash
 git clone https://github.com/j04783993-prog/dsh-ubuntu-vm-control.git
@@ -57,27 +79,15 @@ python install.py --uninstall                # 移除配置
 
 装完**完全退出 dsh 再重新打开**（不是刷新窗口）。
 
-### 通过 npm 安装（可选）
+> **注意**：`npm i dsh-ubuntu-vm-control` 只是把包装下来，**不会自动注册**成 dsh 插件。
+> 想用 dsh 集成，装完还要执行一次 `npx dsh-ubuntu-vm-control install`（等价于 `python install.py`）。
 
-不想克隆仓库时可以直接用 npm 包。它本质上只是转发命令给 Python 脚本，所以本机仍需要 **Python 3.8+**。
+npm 包的其它子命令：
 
 ```bash
-npx dsh-ubuntu-vm-control install            # 等价于 python install.py
-npx dsh-ubuntu-vm-control install --profile web
-npx dsh-ubuntu-vm-control serve              # 以 MCP stdio 方式启动服务
-```
-
-`serve` 适合写进其它 MCP 客户端的配置：
-
-```json
-{
-  "mcpServers": {
-    "ubuntu-vm-control": {
-      "command": "npx",
-      "args": ["-y", "dsh-ubuntu-vm-control", "serve"]
-    }
-  }
-}
+npx dsh-ubuntu-vm-control install --profile web   # 装到别的 profile
+npx dsh-ubuntu-vm-control install --dry-run       # 只看结果，不写文件
+npx dsh-ubuntu-vm-control serve                   # 以 MCP stdio 方式启动服务
 ```
 
 ## 配置被控机

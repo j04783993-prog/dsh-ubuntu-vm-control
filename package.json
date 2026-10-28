@@ -1,7 +1,7 @@
 {
   "name": "dsh-ubuntu-vm-control",
-  "version": "0.1.1",
-  "description": "DeepSeek Harness 插件：通过 SSH 控制 Ubuntu 桌面虚拟机——命令、终端、鼠标键盘，以及真实截图。",
+  "version": "0.1.2",
+  "description": "Ubuntu 虚拟机控制 MCP server：通过 SSH 操作桌面（命令/终端/截图/键鼠），支持 DeepSeek Harness 一键集成。",
   "license": "MIT",
   "author": "Jerry",
   "keywords": [

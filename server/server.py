@@ -30,7 +30,7 @@ CONFIG_PATH = BASE / "config.json"
 USER_DIR = Path.home() / ".dsh-ubuntu-vm-control"
 USER_CONFIG = USER_DIR / "config.json"
 SERVER_NAME = "ubuntu-vm-control"
-SERVER_VERSION = "0.1.1"
+SERVER_VERSION = "0.1.2"
 SUPPORTED_PROTOCOLS = ("2025-06-18", "2025-03-26", "2024-11-05")
 
 DEFAULT_CONFIG = {
